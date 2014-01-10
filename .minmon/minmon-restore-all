@@ -1,0 +1,6 @@
+#!/bin/bash
+
+source $HOME/.minmonrc
+source minmon-include
+
+windows_restore $1

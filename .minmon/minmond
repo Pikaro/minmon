@@ -1,0 +1,98 @@
+#!/bin/bash
+
+trap cleanup SIGINT
+trap cleanup SIGTERM
+trap cleanup SIGKILL
+
+source $HOME/.minmonrc
+source minmon-include
+
+function cleanup {
+	log "Cleaning up..."
+	rm $MINMON_TMP -rf
+	exit 0
+}
+
+function logwaiter {
+	while [ "`ps -p $1 -o pid=`" ]; do
+		sleep 1
+	done
+
+	rm $MINMON_TMP/out.$2 -f
+}
+
+function traywaiter {
+	while [ "`ps -p $1 -o pid=`" ]; do
+		sleep 1
+	done
+
+	kill $2 2> /dev/null
+}
+
+function execute {
+	pid=`echo $@ | cut -d : -f 1`
+	exe=`echo $@ | cut -d : -f 2-`
+
+	if [ "`echo $exe | cut -d : -f 1`" = "min" ]; then
+		MINIMIZE="true"
+		exe=`echo $exe | cut -d : -f 2-`
+	else
+		MINIMIZE=""
+	fi
+
+	name=`echo $exe | cut -d \  -f 1`
+
+	log "$pid says: Start $exe."
+
+	$exe > $MINMON_TMP/out.$pid 2>&1 &
+	childpid=$!
+	minmon-systray.py $childpid $name &
+	traypid=$!
+
+	if [ "$MINIMIZE" ]; then {
+		while `true`; do
+			if [ "`xdotool search --onlyvisible --pid $childpid 2> /dev/null`" ]; then
+				minmon-hide-all $childpid
+				break
+			fi
+		done
+		sleep 0.1
+	}&
+	fi
+
+	log "Told $pid: Listen to $MINMON_TMP/out.$pid."
+
+	logwaiter $childpid $pid &
+	traywaiter $childpid $traypid &
+}
+
+if minmon_running; then
+	err "Another minmond is already running. Aborting."
+	exit 1
+fi
+
+if [ -f $MINMON_FIFO ]; then
+
+	cat $MINMON_FIFO | while read command; do
+		execute $command
+	done
+
+	rm $MINMON_FIFO
+	mkfifo $MINMON_FIFO
+
+fi
+
+if [ ! -p $MINMON_FIFO ]; then
+
+	mkfifo $MINMON_FIFO
+
+fi
+
+while true; do
+
+	command=`grep -v "^s" < $MINMON_FIFO`
+	execute $command
+
+done
+
+cleanup

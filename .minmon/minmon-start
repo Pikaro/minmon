@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [ "$1" = "-min" ]; then
+
+	MINIMIZE="true"
+	shift
+
+fi
+
+source $HOME/.minmonrc
+source minmon-include
+
+if [ $MINIMIZE ]; then
+	echo "$$:min:$@" >> $MINMON_FIFO
+else
+	echo "$$:$@" >> $MINMON_FIFO
+fi
+
+if [ ! $VERBOSE ]; then
+	exit 0
+fi
+
+minmon_outfifo $$ &
+
+echo "Printing command output. Press key to stop at any time."
+read
+
+minmon_outfifo $$ del
+
+exit 0

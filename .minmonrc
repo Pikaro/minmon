@@ -1,1 +1,6 @@
-/home/vinter/.minmonrc
+VERBOSE=`false`
+MINMON_HOME="$HOME/.minmon/"
+MINMON_TMP="/tmp/minmon/"
+MINMON_FIFO="$MINMON_TMP/minmon.fifo"
+LOGFILE="$MINMON_HOME/log"
+PATH="$PATH:$MINMON_HOME"

@@ -1,1 +1,46 @@
-/home/vinter/.bin/minmon
+#!/bin/bash
+
+CMD=$1
+shift
+
+source $HOME/.minmonrc
+source minmon-include
+
+start() {
+
+	$MINMON_HOME/minmond &
+
+}
+
+stop() {
+
+	killall minmond
+
+}
+
+case $CMD in
+
+	"start") start ;;
+
+	"stop")	stop ;;
+
+	"restart")
+
+		stop
+		start
+
+	;;
+
+	"launch")
+
+		$MINMON_HOME/minmon-start $@
+
+	;;
+
+	*)
+
+		echo "Usage: minmon (start|stop|launch <command> <args>)"
+
+	;;
+
+esac

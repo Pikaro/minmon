@@ -1,0 +1,68 @@
+#!/bin/bash
+
+PARENT=`ps --no-heading -o %c -p $PPID`
+
+err() {
+	if [ "$PARENT" = "bash" ]; then
+		TARGET=/dev/stderr
+	else
+		TARGET=$LOGFILE
+	fi
+
+	echo "$$ - ERROR: $@" >> $TARGET
+}
+
+log() {
+	if [ "$PARENT" = "bash" ]; then
+		TARGET=/dev/stdout
+	else
+		TARGET=$LOGFILE
+	fi
+
+	echo "$$ - $@" >> $TARGET
+}
+
+minmon_running() {
+
+	pgrep minmond >/dev/null 2>&1
+	if [ $? -eq 0 ]; then
+		return 1
+	else
+		return 0
+	fi
+
+}
+
+minmon_outfifo() {
+
+	if [ "$2" = "del" ]; then
+		rm $MINMON_TMP/out.$1
+		return 0
+
+	elif [ ! -f $MINMON_TMP/out.$1 ]; then
+		touch $MINMON_TMP/out.$1
+	fi
+
+	tail -f $MINMON_TMP/out.$1
+
+}
+
+window_hide() {
+
+	xdotool windowunmap $2
+	echo $2 >> $MINMON_TMP/hid.$1
+
+}
+
+windows_restore() {
+
+	cat $MINMON_TMP/hid.$1 | while read xid; do
+
+		xdotool windowmap $xid
+
+	done
+	rm $MINMON_TMP/hid.$1
+
+}
+
+mkdir -p $MINMON_TMP
