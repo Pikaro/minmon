@@ -29,7 +29,7 @@ USAGE
 - Try closing the xterm that opens as usual. It seems to close, but your tray will have an xterm icon. Click that, and it reappears; click it again, it disappears again. Right-click the icon to terminate the xterm.
 - Try the same on a normal xterm - it doesn't get and icon and closes normally.
 - Put things such as minmon launch firefox, minmon launch evolution, minmon launch xchat... in your autostart. If you hand it the -min parameter (minmon -min firefox) it will start minimized. (This works in like 95% of cases because sometimes, unexpected child windows will spawn first.)
-- minmon stop and minmon restart are mainly for playing around with things and not really useful to the average user.
+- minmon stop and minmon restart are mainly for playing around with things and not really useful to the average user. They're not for interacting with children, only with the daemon! minmon-close, minmon-hide-all, minmon-state-visible etc. can be freely abused in order to produce scripted behavior.
 
 ======
 
@@ -38,4 +38,4 @@ TODO
 - Ensure secure FIFO communication (necessary?)
 - Better way to start minimized (is there a "main window" identifier?)
 - Act differently when closing dialogs etc (should be possible by window type)
-
+- Relocate files, use .config etc. Ugly right now.
