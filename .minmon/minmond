@@ -85,14 +85,17 @@ fi
 if [ ! -p $MINMON_FIFO ]; then
 
 	mkfifo $MINMON_FIFO
+	chmod 600 $MINMON_FIFO
 
 fi
 
-while true; do
+rm -f $MINMON_TMP_LOG
 
-	command=`grep -v "^s" < $MINMON_FIFO`
+tail -f $MINMON_FIFO | while read command; do
+	echo $command >> $MINMON_TMP_LOG
 	execute $command
-
+	rm $MINMON_FIFO_LOCK
+	sleep 1
 done
 
 cleanup

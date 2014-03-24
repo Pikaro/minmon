@@ -2,5 +2,7 @@ VERBOSE=`false`
 MINMON_HOME="$HOME/.minmon/"
 MINMON_TMP="/tmp/minmon/"
 MINMON_FIFO="$MINMON_TMP/minmon.fifo"
+MINMON_FIFO_LOCK="$MINMON_TMP/minmon.fifo.lock"
+MINMON_TMP_LOG="$MINMON_TMP/minmon.log"
 LOGFILE="$MINMON_HOME/log"
 PATH="$PATH:$MINMON_HOME"
