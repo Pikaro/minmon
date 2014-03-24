@@ -39,3 +39,10 @@ TODO
 - Better way to start minimized (is there a "main window" identifier?)
 - Act differently when closing dialogs etc (should be possible by window type)
 - Relocate files, use .config etc. Ugly right now.
+
+=====
+
+BUGS
+
+- -min sometimes doesn't work
+- Popups can block input to main window, minmizing them doesn't remedy that => unusable main window
