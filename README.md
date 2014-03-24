@@ -14,3 +14,28 @@ Note: As the windows are unmapped, the performance costs of having programs run 
 Licensed under GPLv2, so have at it! Or mail me under git at d-reis.com. Criticism welcome, I know I'm using some ugly hacks.
 
 David Reis, Mar 2014
+
+======
+
+USAGE
+
+- Put .minmonrc and .minmon in ~ (you can change the path of .minmon in .minmonrc)
+- Put minmon in your $PATH
+- minmon start
+  This launches the daemon; it opens a FIFO in /tmp to watch for incoming commands to execute.
+  It is recommended to put this in your Autostart, .xinitrc, .compiz-session or what have you.
+- Rebind your window manager's "close window" keys to .minmon/minmon-close (i. e. your equivalent to Alt+F4)
+- minmon launch xterm
+- Try closing the xterm that opens as usual. It seems to close, but your tray will have an xterm icon. Click that, and it reappears; click it again, it disappears again. Right-click the icon to terminate the xterm.
+- Try the same on a normal xterm - it doesn't get and icon and closes normally.
+- Put things such as minmon launch firefox, minmon launch evolution, minmon launch xchat... in your autostart. If you hand it the -min parameter (minmon -min firefox) it will start minimized. (This works in like 95% of cases because sometimes, unexpected child windows will spawn first.)
+- minmon stop and minmon restart are mainly for playing around with things and not really useful to the average user.
+
+======
+
+TODO
+
+- Ensure secure FIFO communication (necessary?)
+- Better way to start minimized (is there a "main window" identifier?)
+- Act differently when closing dialogs etc (should be possible by window type)
+
