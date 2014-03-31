@@ -46,3 +46,5 @@ BUGS
 
 - -min sometimes doesn't work
 - Popups can block input to main window, minmizing them doesn't remedy that => unusable main window
+- Windows become unresponsive sometime. Why?
+- Sometimes, doubleclicks on tray icon are needed to minimze. Why?

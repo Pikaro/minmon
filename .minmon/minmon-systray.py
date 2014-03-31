@@ -10,10 +10,10 @@ class SystrayIconApp:
 		self.pid = pid
 		self.name = name
 		self.tray = gtk.StatusIcon()
-		try:
+		if gtk.icon_theme_get_default().has_icon(self.name):
 			self.tray.set_from_icon_name(self.name)
-		except:
-			self.tray.set_from_stock(gtk.STOCK_ABOUT) 
+		else:
+			self.tray.set_from_stock(gtk.STOCK_ABOUT)
 		self.tray.connect('button_press_event', self.click)
 		self.tray.connect('popup-menu', self.make_menu)
 
@@ -24,16 +24,16 @@ class SystrayIconApp:
 			else:
 				call(["minmon-restore-all",str(self.pid)])
 
-    	def make_menu(self, icon, event_button, event_time):
+  	def make_menu(self, icon, event_button, event_time):
 		menu = gtk.Menu()
 
-		# add quit item
 		quit = gtk.MenuItem("Quit")
-		quit.show()
-		menu.append(quit)
 		quit.connect('activate', self.quit)
 
-		menu.popup(None, None, gtk.status_icon_position_menu,
+		menu.append(quit)
+		menu.show_all()
+
+		menu.popup(None, None, None,
 		           event_button, event_time, self.tray)
 
 	def quit(self, event):
@@ -43,4 +43,3 @@ class SystrayIconApp:
 if __name__ == "__main__":
 	SystrayIconApp(argv[1],argv[2])
 	gtk.main()
-
