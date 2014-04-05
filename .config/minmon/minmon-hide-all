@@ -1,0 +1,10 @@
+#!/bin/bash
+
+source $HOME/.config/minmon/minmonrc
+source minmon-include
+
+for xid in `xdotool search --onlyvisible --pid $1 2> /dev/null`; do
+
+	window_hide $1 $xid
+
+done

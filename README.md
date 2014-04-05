@@ -1,4 +1,4 @@
-minmon
+minmon 0.1.0a
 ======
 
 Implement "minimize to tray" for applications that don't support it
@@ -19,12 +19,12 @@ David Reis, Mar 2014
 
 USAGE
 
-- Put .minmonrc and .minmon in ~ (you can change the path of .minmon in .minmonrc)
+- Put .config/minmon in ~/.config (you can change the path of the script directory in minmonrc, but minmonrc needs to be under .config)
 - Put minmon in your $PATH
 - minmon start
   This launches the daemon; it opens a FIFO in /tmp to watch for incoming commands to execute.
   It is recommended to put this in your Autostart, .xinitrc, .compiz-session or what have you.
-- Rebind your window manager's "close window" keys to .minmon/minmon-close (i. e. your equivalent to Alt+F4)
+- Rebind your window manager's "close window" keys to ~/.config/minmon/minmon-close (i. e. your equivalent to Alt+F4)
 - minmon launch xterm
 - Try closing the xterm that opens as usual. It seems to close, but your tray will have an xterm icon. Click that, and it reappears; click it again, it disappears again. Right-click the icon to terminate the xterm.
 - Try the same on a normal xterm - it doesn't get and icon and closes normally.
@@ -33,18 +33,31 @@ USAGE
 
 ======
 
+HISTORY
+
+0.2.0a
+
+- cleaned up daemon
+- suppressing all kinds of annoying "error" messages now
+- popup windows will always close normally
+- eliminated "sleep" loops, replaced with inotifywait
+- moved cleanup functions to minmon script
+- files live under .config now - crude, but meh
+
+0.1.0a
+
+- First upload to github
+
+======
+
 TODO
 
-- Ensure secure FIFO communication (necessary?)
-- Better way to start minimized (is there a "main window" identifier?)
-- Act differently when closing dialogs etc (should be possible by window type)
-- Relocate files, use .config etc. Ugly right now.
+- Better way to start minimized (is there a reliable "main window" identifier?)
 
 =====
 
 BUGS
 
 - -min sometimes doesn't work
-- Popups can block input to main window, minmizing them doesn't remedy that => unusable main window
 - Windows become unresponsive sometime. Why?
 - Sometimes, doubleclicks on tray icon are needed to minimze. Why?

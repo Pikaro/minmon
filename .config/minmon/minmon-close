@@ -1,0 +1,26 @@
+#!/bin/bash
+
+source $HOME/.config/minmon/minmonrc
+source minmon-include
+
+XID=`xprop -root | grep _NET_ACTIVE_WINDOW\(WINDOW\) | sed 's/.*# //'`
+PID=`xprop -id $XID | grep _NET_WM_PID | sed 's/.* = //'`
+MON=`pidof minmond -x`
+
+if [ "`xprop -id $XID | grep WM_TRANSIENT_FOR`" ]; then
+	wmctrl -c :ACTIVE:
+	exit 0
+fi
+
+ORGPID=$PID
+
+while [ $PID -ne 1 ]; do
+	PID=`ps -p $PID -o ppid=`
+	if [ "${MON/$PID}" != "$MON" ]; then break; fi
+done
+
+if [ $PID -eq 1 ]; then
+	wmctrl -c :ACTIVE:
+else
+	window_hide $ORGPID `xdotool getactivewindow`
+fi

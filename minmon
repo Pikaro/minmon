@@ -3,8 +3,22 @@
 CMD=$1
 shift
 
-source $HOME/.minmonrc
+source $HOME/.config/minmon/minmonrc
 source minmon-include
+
+cleanup() {
+
+	for pid in `ls $MINMON_TMP/lock* 2>/dev/null`; do
+		pid=`cat $pid`
+		(
+		kill $pid 2> /dev/null
+		sleep 3
+		kill -9 $pid 2>/dev/null
+		) &
+	done
+	rm -rf $MINMON_TMP
+
+}
 
 start() {
 
@@ -14,7 +28,10 @@ start() {
 
 stop() {
 
-	killall minmond
+	cleanup
+	killall minmond 2> /dev/null
+	sleep 1
+	killall minmond -9 2> /dev/null
 
 }
 
@@ -23,6 +40,8 @@ case $CMD in
 	"start") start ;;
 
 	"stop")	stop ;;
+
+	"cleanup") cleanup ;;
 
 	"restart")
 

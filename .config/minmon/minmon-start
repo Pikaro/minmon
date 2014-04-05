@@ -1,0 +1,40 @@
+#!/bin/bash
+
+if [ "$1" = "-min" ]; then
+
+	MINIMIZE="true"
+	shift
+
+fi
+
+source $HOME/.config/minmon/minmonrc
+source minmon-include
+
+if [ ! -p "$MINMON_FIFO" ]; then
+	grep -q "$MINMON_FIFO" <(inotifywait -qme create "$MINMON_TMP")
+fi
+
+if [ -f "$MINMON_FIFO_LOCK" ]; then
+	inotifywait -qme delete "$MINMON_FIFO_LOCK"
+fi
+
+touch $MINMON_FIFO_LOCK
+
+if [ $MINIMIZE ]; then
+	echo "$$:min:$@" > $MINMON_FIFO
+else
+	echo "$$:$@" > $MINMON_FIFO
+fi
+
+if [ ! $VERBOSE ]; then
+	exit 0
+fi
+
+minmon_outfifo $$ &
+
+echo "Printing command output. Press key to stop at any time."
+read
+
+minmon_outfifo $$ del
+
+exit 0
