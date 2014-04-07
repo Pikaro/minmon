@@ -35,6 +35,10 @@ USAGE
 
 HISTORY
 
+current
+
+- eliminated 'bug' that forced double clicks to hide windows (caused by offscreen 1x1 windows...?)
+
 0.2.0a
 
 - cleaned up daemon
@@ -60,4 +64,3 @@ BUGS
 
 - -min sometimes doesn't work
 - Windows become unresponsive sometime. Why?
-- Sometimes, doubleclicks on tray icon are needed to minimze. Why?

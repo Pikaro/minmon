@@ -4,6 +4,9 @@
 import gtk
 from subprocess import call
 from sys import argv
+from os import environ
+
+print environ['PATH']
 
 class SystrayIconApp:
 	def __init__(self,pid,name):
