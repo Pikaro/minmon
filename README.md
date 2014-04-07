@@ -38,6 +38,7 @@ HISTORY
 current
 
 - eliminated 'bug' that forced double clicks to hide windows (caused by offscreen 1x1 windows...?)
+- checking for TMP directory now, inotifywait takes too long to set up watches
 
 0.2.0a
 
@@ -57,10 +58,11 @@ current
 TODO
 
 - Better way to start minimized (is there a reliable "main window" identifier?)
+- inotifywait alternative? Takes _too long_!
 
 =====
 
 BUGS
 
 - -min sometimes doesn't work
-- Windows become unresponsive sometime. Why?
+- Firefox windows become unresponsive until unmapped and mapped sometimes. Why?
