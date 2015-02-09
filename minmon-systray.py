@@ -5,6 +5,7 @@ import gtk
 from subprocess import call
 from sys import argv
 from os import environ
+from os.path import exists
 
 class SystrayIconApp:
 	def __init__(self,pid,name):
@@ -20,10 +21,10 @@ class SystrayIconApp:
 
 	def click(self, icon, event):
 		if event.button == 1:
-			if call(["minmon-state-visible",str(self.pid)]):
-				call(["minmon-hide-all",str(self.pid)])
+			if call(["minmon","visible",str(self.pid)]):
+				call(["minmon","closeall",str(self.pid)])
 			else:
-				call(["minmon-restore-all",str(self.pid)])
+				call(["minmon","restoreall",str(self.pid)])
 
   	def make_menu(self, icon, event_button, event_time):
 		menu = gtk.Menu()
