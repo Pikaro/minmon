@@ -1,65 +1,103 @@
 #!/bin/bash
 
+TMP="/tmp/minmon"
+
+launch () {
+
+	if [ "$1" == "-min" ]; then
+		MINIMIZE="true"
+		shift
+	else
+		MINIMIZE="false"
+	fi
+
+	$@ > $TMP/out.$pid 2>&1 &
+	pid=$!
+	touch $TMP/lock.$pid
+	name=`echo $@ | cut -d \  -f 1`
+	minmon-systray.py $pid $name &
+	traypid=$!
+
+	if [ "$MINIMIZE" == "true" ]; then {
+		while `true`; do
+			xids=`xdotool search --onlyvisible --pid $pid 2> /dev/null`
+			if [ "$xids" ]; then
+				for xid in $xids; do
+					windowclose $xid $pid
+				done
+				break
+			fi
+			sleep 0.1
+		done
+	}&
+	fi
+
+	wait $pid
+	rm $TMP/lock.$pid
+	kill $traypid
+
+}
+
+windowclose () {
+
+	if [ "$1" ]; then
+		xid=$1
+	else
+		xid=`xdotool getactivewindow`
+	fi
+
+	if [ "$2" ]; then
+		pid=$2
+	else
+		pid=`xprop _NET_WM_PID -id $xid | grep -v 'not found' | sed 's/.* = //'`
+	fi
+
+	if [ -f $TMP/lock.$pid ]; then
+		xdotool windowunmap $xid
+		echo $xid >> $TMP/hid.$pid
+	else
+		wmctrl -c :ACTIVE:
+	fi
+
+}
+
+closeall () {
+
+	xids=`xdotool search --onlyvisible --pid $1 2> /dev/null`
+	for xid in $xids; do
+		windowclose $xid $pid
+	done
+
+}
+
+restoreall () {
+
+	xids=`cat $TMP/hid.$1`
+	for xid in $xids; do
+		xdotool windowmap $xid
+	done
+	rm $TMP/hid.$1
+
+}
+
+visible () {
+
+	xids=`xdotool search --onlyvisible --pid $1 2> /dev/null`
+	for xid in $xids; do
+		if [ ! "`xwininfo -id $xid | grep 'geometry 1x1'`" ]; then
+			exit 1
+		fi
+	done
+
+}
+
+mkdir -p $TMP
+
 CMD=$1
 shift
 
-source $HOME/.config/minmon/minmonrc
-source minmon-include
-
-cleanup() {
-
-	for pid in `ls $MINMON_TMP/lock* 2>/dev/null`; do
-		pid=`cat $pid`
-		(
-		kill $pid 2> /dev/null
-		sleep 3
-		kill -9 $pid 2>/dev/null
-		) &
-	done
-	rm -rf $MINMON_TMP
-
-}
-
-start() {
-
-	$MINMON_HOME/minmond &
-
-}
-
-stop() {
-
-	cleanup
-	killall minmond 2> /dev/null
-	sleep 1
-	killall minmond -9 2> /dev/null
-
-}
-
-case $CMD in
-
-	"start") start ;;
-
-	"stop")	stop ;;
-
-	"cleanup") cleanup ;;
-
-	"restart")
-
-		stop
-		start
-
-	;;
-
-	"launch")
-
-		$MINMON_HOME/minmon-start $@
-
-	;;
-
-	*)
-
-		echo "Usage: minmon (start|stop|launch <command> <args>)"
-
-	;;
-
-esac
+if [ "$CMD" == "launch" ]; then
+	launch $@ &
+else
+	$CMD $@ || echo "Usage: minmon (windowclose [XID] [PID] | closeall <PID> | restoreall <PID> | visible <PID> | launch [-min] <command> [args])"
+fi
