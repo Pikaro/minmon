@@ -1,13 +1,11 @@
-minmon 0.1.0a
+minmon
 ======
-
-**Implement "minimize to tray" for applications that don't support it**
 
 Lots of applications don't support minimizing to tray, which is annoying if the user's desktop doesn't feature a task bar or similar means of control.
 
-minmon introduces that capability using a very simple idea: Using xdotool, xprop, wmctrl and xwininfo, it associates windows with their process IDs and maps and unmaps those instead of closing them if the process was started through minmon.
+minmon introduces that capability with a very simple idea: Using xdotool, xprop, wmctrl and xwininfo, it associates windows with their process IDs and maps and unmaps those instead of closing them if the process was started through minmon.
 
-This approach is less prone to bugs than other, more complicated routes, but only useful in limited circumstances. Most importantly, it does not work if the user closes a window through its window decorations, only if a key or mouse button is used to do so.
+This approach is less prone to bugs than that of other applications with the same goal, but also less versatile. Most importantly, it does not work if the user closes a window through its window decorations, only if a key or mouse button is used to do so.
 
 ======
 
