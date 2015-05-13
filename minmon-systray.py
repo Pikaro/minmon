@@ -10,7 +10,7 @@ from os.path import exists
 class SystrayIconApp:
 	def __init__(self,pid,name):
 		self.pid = pid
-		self.name = name
+		self.name = name.split('/')[-1]
 		self.tray = gtk.StatusIcon()
 		if gtk.icon_theme_get_default().has_icon(self.name):
 			self.tray.set_from_icon_name(self.name)

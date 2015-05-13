@@ -32,9 +32,9 @@ launch () {
 	}&
 	fi
 
-	wait $pid
+	wait $pid 2>/dev/null
 	rm $TMP/lock.$pid
-	kill $traypid
+	kill $traypid 2>/dev/null
 
 }
 
@@ -72,11 +72,13 @@ closeall () {
 
 restoreall () {
 
-	xids=`cat $TMP/hid.$1`
-	for xid in $xids; do
-		xdotool windowmap $xid
-	done
-	rm $TMP/hid.$1
+	if [ -f $TMP/hid.$1 ]; then
+		xids=`cat $TMP/hid.$1`
+		for xid in $xids; do
+			xdotool windowmap $xid
+		done
+		rm $TMP/hid.$1
+	fi
 
 }
 
